@@ -1,0 +1,137 @@
+.logo-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--color-ink);
+}
+
+.logo-preloader__logo {
+  display: block;
+  width: clamp(220px, 31vw, 380px);
+  max-width: 72vw;
+  height: auto;
+  overflow: visible;
+}
+
+.logo-preloader__path {
+  fill: none;
+  stroke: var(--color-white);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation-duration: var(--cycle-duration);
+  animation-iteration-count: var(--iterations);
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);
+}
+
+.logo-preloader__path--z {
+  animation-name: draw-z-outline;
+}
+
+.logo-preloader__path--k {
+  animation-name: draw-k-outline;
+}
+
+/* Optional looping is available, but the demo now plays only once. */
+.logo-preloader--loop .logo-preloader__outline {
+  animation: reset-outline var(--cycle-duration) ease-in-out infinite both;
+}
+
+/* The black hero is already rendered beneath this full-screen overlay. */
+.logo-preloader--dissolving {
+  pointer-events: none;
+  animation: dissolve-preloader var(--dissolve-duration)
+    cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.logo-preloader--dissolving .logo-preloader__logo {
+  animation: soften-logo var(--dissolve-duration) ease-out both;
+}
+
+/* Start at the lower-left corner and draw the entire Z border. */
+@keyframes draw-z-outline {
+  0%,
+  3% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  3.01% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  52%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* The K begins only after the Z has been completely outlined. */
+@keyframes draw-k-outline {
+  0%,
+  52% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  52.01% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  82%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes dissolve-preloader {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes soften-logo {
+  from { filter: blur(0); }
+  to { filter: blur(4px); }
+}
+
+@keyframes reset-outline {
+  0%,
+  91% {
+    opacity: 1;
+  }
+  99%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-preloader__path,
+  .logo-preloader--loop .logo-preloader__outline {
+    animation: none;
+    opacity: 1;
+  }
+
+  .logo-preloader__path {
+    stroke-dashoffset: 0;
+  }
+
+  .logo-preloader--dissolving {
+    /* Keep the completion event while avoiding a visible motion sequence. */
+    animation-duration: 1ms;
+  }
+
+  .logo-preloader--dissolving .logo-preloader__logo {
+    animation: none;
+    filter: none;
+  }
+}
